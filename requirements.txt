@@ -1,0 +1,12 @@
+flask
+flask-sqlalchemy
+flask-login
+pandas
+geopy
+requests
+selenium
+undetected-chromedriver
+setuptools
+pyarrow
+werkzeug
+folium
