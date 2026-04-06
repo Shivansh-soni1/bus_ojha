@@ -4,7 +4,7 @@ import os
 import requests
 from geopy.geocoders import Nominatim
 
-API_KEY = "rr_6ilyrx3lm3vewaa53nhqtzz81fjv4jmc"
+API_KEY = "rr_osqvgdxsvqqt8fubacybdezqqgdtq6ja"
 API_URL = "https://api.railradar.org/api/v1/trains/between"
 geolocator = Nominatim(user_agent="smart_travel_india")
 geo_cache = {}
@@ -52,7 +52,7 @@ def find_nearest_station(lat, lon, station_list):
         dist = haversine(lat, lon, s["lat"], s["lon"])
         if dist < min_dist:
             min_dist = dist
-            nearest = {"code": s["code"], "name": s["name"], "distance_km": round(dist, 2)}
+            nearest = {"code": s["code"], "name": s["name"], "lat": s["lat"], "lon": s["lon"], "distance_km": round(dist, 2)}
     return nearest
 
 def get_trains(source, dest, date="2026-03-10", dist_km=0):
@@ -92,7 +92,9 @@ def get_trains(source, dest, date="2026-03-10", dist_km=0):
                         "duration": round(t.get("travelTimeMinutes", 0) / 60, 1),
                         "price": 150 + int(t.get("distanceKm", 0) * 0.45),
                         "rating": "4.3", "punctuality": 88 if score > 50 else 65,
-                        "icon": "🚆", "link": "https://www.irctc.co.in/nget/booking/train-list"
+                        "icon": "🚆", "link": "https://www.irctc.co.in/nget/booking/train-list",
+                        "src_stn_lat": src_stn["lat"], "src_stn_lon": src_stn["lon"], "src_stn_name": src_stn["name"],
+                        "dst_stn_lat": dst_stn["lat"], "dst_stn_lon": dst_stn["lon"], "dst_stn_name": dst_stn["name"]
                     })
         except: continue
 

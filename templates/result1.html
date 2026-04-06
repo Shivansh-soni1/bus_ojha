@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Route Results</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-4">
+
+<div class="d-flex justify-content-between mb-4">
+<h2>
+Route :
+<span class="text-primary">
+{{ source }} ➝ {{ destination }}
+</span>
+</h2>
+<a href="/" class="btn btn-outline-secondary">Back</a>
+</div>
+
+<!-- ===============================
+MULTI-ROUTE
+================================ -->
+
+{% if routes %}
+
+{% for route in routes %}
+
+<h3 class="text-success mb-3">
+
+Route {{ route.route_id }} ({{ route.type }})
+
+{% if route.best %}
+<span class="badge bg-warning text-dark">🏆 Best</span>
+{% endif %}
+
+</h3>
+{% for step in route.steps %}
+
+<div class="card mb-4 shadow-sm">
+<div class="card-body">
+
+<h4 class="mb-3">
+Step {{ step.step }} :
+{% if step.mode == "BUS" %} 🚌 Bus {% endif %}
+{% if step.mode == "TRAIN" %} 🚆 Train {% endif %}
+</h4>
+
+<p class="fw-bold">
+{{ step.from }} ➝ {{ step.to }}
+</p>
+
+<!-- BUS -->
+{% if step.mode == "BUS" %}
+
+{% for r in step.data %}
+<div class="border p-3 mb-3 rounded">
+
+{% if r.operator %}
+<h5>{{ r.operator }}</h5>
+<p class="text-muted">{{ r.bus_type }}</p>
+<p>⏱ Duration : {{ r.duration }} hrs</p>
+<p class="text-success">Price : ₹{{ r.price }}</p>
+<a href="{{ r.link }}" target="_blank" class="btn btn-primary">Book Bus</a>
+
+{% else %}
+<p class="text-warning fw-bold">🚕 {{ r.msg }}</p>
+<p class="text-success">{{ r.price }}</p>
+{% endif %}
+
+</div>
+{% endfor %}
+
+{% endif %}
+
+<!-- TRAIN -->
+{% if step.mode == "TRAIN" %}
+
+<table class="table table-striped table-bordered">
+<thead class="table-dark">
+<tr>
+<th>Rank</th>
+<th>Train Name</th>
+<th>Travel Time</th>
+<th>Speed</th>
+<th>Halts</th>
+<th>Distance</th>
+</tr>
+</thead>
+
+<tbody>
+{% for t in step.data %}
+<tr>
+<td>{{ t[0] }}</td>
+<td>{{ t[1] }}</td>
+<td>{{ t[2] }}</td>
+<td>{{ t[3] }}</td>
+<td>{{ t[4] }}</td>
+<td>{{ t[5] }}</td>
+</tr>
+{% endfor %}
+</tbody>
+
+</table>
+
+{% endif %}
+
+</div>
+</div>
+
+{% endfor %}
+
+<hr>
+
+{% endfor %}
+
+{% else %}
+
+<div class="alert alert-danger">
+No routes found for this journey.
+</div>
+
+{% endif %}
+
+</div>
+
+</body>
+</html>
